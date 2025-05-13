@@ -1,8 +1,14 @@
 import { test, expect } from '@playwright/test';
-import { calculateMedian, listNamesAndEmails, shiftAround, toShiftedAround } from '../src/studentFunctions.js';
+import {
+  calculateMedian,
+  listNamesAndEmails,
+  shiftAround,
+  toShiftedAround,
+  decrementOrRemoveFromShoppingCart,
+} from '../src/studentFunctions.js';
 
 test.describe('toShiftedAround()', () => {
-  test.skip(toShiftedAround() === 'NOT IMPLEMENTED', 'toShiftedAround() is not implemented');
+  test.skip(toShiftedAround([1, 2, 3, 4, 5]) === 'NOT IMPLEMENTED', 'toShiftedAround() is not implemented');
   const cases = [
     [
       [1, 2, 3, 4, 5],
@@ -27,7 +33,7 @@ test.describe('toShiftedAround()', () => {
 });
 
 test.describe('shiftAround()', () => {
-  test.skip(shiftAround() === 'NOT IMPLEMENTED', 'shiftAround() is not implemented');
+  test.skip(shiftAround([1, 2, 3, 4, 5]) === 'NOT IMPLEMENTED', 'shiftAround() is not implemented');
   const cases = [
     [
       [1, 2, 3, 4, 5],
@@ -50,7 +56,7 @@ test.describe('shiftAround()', () => {
 });
 
 test.describe('calculateMedian()', () => {
-  test.skip(calculateMedian() === 'NOT IMPLEMENTED', 'calculateMedian() is not implemented');
+  test.skip(calculateMedian([1]) === 'NOT IMPLEMENTED', 'calculateMedian() is not implemented');
   const cases = [
     [[1, 2, 3, 4, 5], 3],
     [[5, 3, 2, 4, 1], 3],
@@ -72,7 +78,10 @@ test.describe('calculateMedian()', () => {
 });
 
 test.describe('listNamesAndEmails()', () => {
-  test.skip(listNamesAndEmails() === 'NOT IMPLEMENTED', 'listNamesAndEmails() is not implemented');
+  test.skip(
+    listNamesAndEmails([{ username: 'Guybrush', email: 'mighty@pirate.gov', id: 1 }]) === 'NOT IMPLEMENTED',
+    'listNamesAndEmails() is not implemented'
+  );
   const cases = [
     ['Empty array input', [], []],
     [
@@ -177,6 +186,114 @@ test.describe('listNamesAndEmails()', () => {
   for (const [desc, c, expected] of cases) {
     test(`${desc} -> ${JSON.stringify(expected)}`, () => {
       expect(listNamesAndEmails(c)).toEqual(expected);
+    });
+  }
+});
+
+test.describe('decrementOrRemoveFromShoppingCart()', () => {
+  test.skip(
+    decrementOrRemoveFromShoppingCart([{ itemId: 1, count: 5 }], 1) === 'NOT IMPLEMENTED',
+    'decrementOrRemoveFromShoppingCart() is not implemented'
+  );
+  const cases = [
+    {
+      description: 'One item, count 5',
+      input: {
+        cart: [{ itemId: 4123, name: 'Lightsaber', color: 'green', count: 5 }],
+        itemId: 4123,
+      },
+      expected: [{ itemId: 4123, name: 'Lightsaber', color: 'green', count: 4 }],
+    },
+    {
+      description: 'One item, count 1',
+      input: {
+        cart: [{ itemId: 423, name: 'Lightsaber', color: 'green', count: 1 }],
+        itemId: 423,
+      },
+      expected: [],
+    },
+    {
+      description: 'Multiple items, count 10',
+      input: {
+        cart: [
+          { itemId: 4123, name: 'Lightsaber', color: 'green', count: 1 },
+          { itemId: 9999, name: 'Grog Mug', batteriesIncluded: true, count: 10 },
+        ],
+        itemId: 9999,
+      },
+      expected: [
+        { itemId: 4123, name: 'Lightsaber', color: 'green', count: 1 },
+        { itemId: 9999, name: 'Grog Mug', batteriesIncluded: true, count: 9 },
+      ],
+    },
+    {
+      description: 'Multiple items mingled, count 2',
+      input: {
+        cart: [
+          { itemId: 123, name: 'Lightsaber', color: 'green', count: 1 },
+          { itemId: 999, name: 'Grog Mug', batteriesIncluded: true, count: 2 },
+          { itemId: 1263, name: 'Lightsaber', color: 'green', count: 1 },
+        ],
+        itemId: 999,
+      },
+      expected: [
+        { itemId: 123, name: 'Lightsaber', color: 'green', count: 1 },
+        { itemId: 999, name: 'Grog Mug', batteriesIncluded: true, count: 1 },
+        { itemId: 1263, name: 'Lightsaber', color: 'green', count: 1 },
+      ],
+    },
+    {
+      description: 'Multiple items mingled, count 1',
+      input: {
+        cart: [
+          { itemId: 123, name: 'Lightsaber', color: 'green', count: 1 },
+          { itemId: 532, name: 'Grog Mug', batteriesIncluded: true, count: 1 },
+          { itemId: 1283, name: 'Lightsaber', color: 'green', count: 1 },
+        ],
+        itemId: 532,
+      },
+      expected: [
+        { itemId: 123, name: 'Lightsaber', color: 'green', count: 1 },
+        { itemId: 1283, name: 'Lightsaber', color: 'green', count: 1 },
+      ],
+    },
+  ];
+
+  for (const { description, input, expected } of cases) {
+    test(`${description}`, () => {
+      expect(decrementOrRemoveFromShoppingCart(input.cart, input.itemId)).toEqual(expected);
+    });
+  }
+  const errorCases = [
+    {
+      description: 'Item not in cart',
+      input: {
+        cart: [{ itemId: 4123, name: 'Lightsaber', color: 'green', count: 5 }],
+        itemId: 89,
+      },
+      expected: 'not found',
+    },
+    {
+      description: 'Count negative',
+      input: {
+        cart: [{ itemId: 423, name: 'Lightsaber', color: 'green', count: -42 }],
+        itemId: 423,
+      },
+      expected: 'invalid',
+    },
+    {
+      description: 'Count not present',
+      input: {
+        cart: [{ itemId: 423, name: 'Lightsaber', color: 'green' }],
+        itemId: 423,
+      },
+      expected: 'invalid',
+    },
+  ];
+
+  for (const { description, input, expected } of errorCases) {
+    test(`${description}`, () => {
+      expect(() => decrementOrRemoveFromShoppingCart(input.cart, input.itemId)).toThrow();
     });
   }
 });

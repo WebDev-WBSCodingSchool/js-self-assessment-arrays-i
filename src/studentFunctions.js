@@ -7,5 +7,5 @@ import toShiftedAround from './toShiftedAround.js';
 import shiftAround from './shiftAround.js';
 import calculateMedian from './calculateMedian.js';
 import listNamesAndEmails from './listNamesAndEmails.js';
-
-export { toShiftedAround, shiftAround, calculateMedian, listNamesAndEmails };
+import decrementOrRemoveFromShoppingCart from './advanced-removeFromShoppingCart';
+export { toShiftedAround, shiftAround, calculateMedian, listNamesAndEmails, decrementOrRemoveFromShoppingCart };
