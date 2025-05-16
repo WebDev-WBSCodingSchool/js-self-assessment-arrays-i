@@ -1,4 +1,4 @@
-# JavaScript Self-Assessment Basics
+# JavaScript Self-Assessment Arrays I
 
 Welcome! This mini-project lets you check your JavaScript fundamentals **all on your own**—no instructor required. Clone the repository, complete the function stubs in **`src/`**, then run the automated tests to see how you did.
 
